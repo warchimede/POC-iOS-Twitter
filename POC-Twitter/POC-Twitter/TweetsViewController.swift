@@ -10,7 +10,7 @@ import SafariServices
 import UIKit
 import WebKit
 
-let TweetIds = [1240943034780520450, 1240596478663495681, 1242516361420640256]
+let TweetIds = [1240943034780520450, 1240596478663495681, 1242516361420640256, 1245651655594401792]
 
 enum Callback: String {
   case height = "heightCallback"
@@ -105,11 +105,7 @@ class TweetsViewController: UITableViewController {
     let cell = tableView.dequeueReusableCell(withIdentifier: TweetCell.identifier, for: indexPath)
     if let tweet = tweets.getByIdx(indexPath.row), let webView = tweet.webView {
       cell.contentView.addSubview(webView)
-
-      //      webView.topAnchor.constraint(equalTo: cell.topAnchor).isActive = true
-      //      webView.rightAnchor.constraint(equalTo: cell.rightAnchor).isActive = true
-      //      webView.bottomAnchor.constraint(equalTo: cell.bottomAnchor).isActive = true
-      //      webView.leftAnchor.constraint(equalTo: cell.leftAnchor).isActive = true
+      cell.clipsToBounds = true
     }
     return cell
   }
