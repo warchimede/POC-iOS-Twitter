@@ -7,24 +7,17 @@
 //
 
 import Foundation
-import WebKit
 
-class Tweet {
+struct Tweet {
   // The tweet id
   let id: Int
 
   // An index value we'll use to map tweets to the WKWebViews tag property and the UITableView row
   let idx: Int
 
-  // The height of the WKWebView
-  var height: CGFloat
-
-  // The WKWebView we'll use to display the tweet
-  var webView: WKWebView?
-
   init(id: Int, idx: Int) {
     self.id = id
     self.idx = idx
-    self.height = TweetCell.defaultCellHeight
+//    self.height = TweetCell.defaultCellHeight
   }
 }

@@ -10,17 +10,10 @@ import SafariServices
 import UIKit
 import WebKit
 
-let TweetIds = [1240943034780520450, 1240596478663495681, 1242516361420640256, 1245651655594401792]
-
-enum Callback: String {
-  case height = "heightCallback"
-}
-
-
 class TweetsViewController: UITableViewController {
 
-  let tweets = TweetsManager.shared
-  let widgetsJs = WidgetsJsManager.shared
+  let tweetIds = [1240943034780520450, 1240596478663495681, 1242516361420640256, 1245651655594401792]
+  private var tweetWebViews = Set<TweetWebView>()
 
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -34,39 +27,31 @@ class TweetsViewController: UITableViewController {
 
     tableView.register(TweetCell.self, forCellReuseIdentifier: TweetCell.identifier)
 
-    initializeView(TweetIds)
-  }
-
-  func initializeView(_ tweetIds: [Int]) {
-    tweets.initializeWithTweetIds(tweetIds)
-
-    // Load widgets.js globally
-    widgetsJs.load()
-
-    // Preload WebViews before they are rendered
     preloadWebviews()
   }
 
   // WebView Management
 
   func preloadWebviews() {
-    tweets.all().forEach { tweet in
-      tweet.webView = createWebView(idx: tweet.idx)
+    tweetIds.forEach { tweetId in
+      let tweetWebView = createTweetWebView(tweetId: tweetId)
+      tweetWebView.load(tweetId: tweetId)
+      tweetWebViews.insert(tweetWebView)
     }
   }
 
-  func createWebView(idx: Int) -> WKWebView {
-    let webView = WKWebView()
+  func createTweetWebView(tweetId: Int) -> TweetWebView {
+    let webView = TweetWebView()
 
     // Set delegates
     webView.navigationDelegate = self
     webView.uiDelegate = self
 
     // Register callbacks
-    webView.configuration.userContentController.add(self, name: Callback.height.rawValue)
+    webView.configuration.userContentController.add(self, name: WebCallback.height.rawValue)
 
     // Set index as tag
-    webView.tag = idx
+    webView.tag = tweetId
 
     // Set initial frame
     webView.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: CGFloat(TweetCell.defaultCellHeight))
@@ -74,24 +59,23 @@ class TweetsViewController: UITableViewController {
     // Prevent scrolling
     webView.scrollView.isScrollEnabled = false
 
-    // Load HTML template and set your domain
-    webView.loadHTMLString(TweetCell.html, baseURL: URL(string: "https://france.tv")!)
-
     return webView
   }
 
   // UITableViewController
 
   override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return tweets.count()
+    return tweetIds.count
   }
 
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let cell = tableView.dequeueReusableCell(withIdentifier: TweetCell.identifier, for: indexPath)
-    if let tweet = tweets.getByIdx(indexPath.row), let webView = tweet.webView {
+
+    if let webView = tweetWebViews.first(where: { $0.tag == tweetIds[indexPath.row] }) {
       cell.contentView.addSubview(webView)
       cell.clipsToBounds = true
     }
+
     return cell
   }
 
@@ -100,20 +84,22 @@ class TweetsViewController: UITableViewController {
   }
 
   override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-    if let tweet = tweets.getByIdx(indexPath.row) {
-      return tweet.height
-    }
-    return TweetCell.defaultCellHeight
+
+    guard let webView = tweetWebViews.first(where: { $0.tag == tweetIds[indexPath.row] })
+      else { return TweetCell.defaultCellHeight }
+
+    return webView.height
   }
 }
 
 // MARK:- Helpers
 extension TweetsViewController {
-  func updateHeight(idx: Int, height: CGFloat) {
-    guard let tweet = tweets.getByIdx(idx)
-      else { return }
+  func updateHeight(tag: Int, height: CGFloat) {
+    guard let webView = tweetWebViews.first(where: { $0.tag == tag }),
+      let idx = tweetIds.firstIndex(of: tag)
+    else { return }
 
-    tweet.height = height + TweetCell.padding
+    webView.height = height + TweetCell.padding
 
     // Prevent UITableViewCells from jumping around an changing the scroll position as the resize
     tableView.reloadRowWithoutAnimation(IndexPath(row: idx, section: 0))
@@ -140,32 +126,6 @@ extension TweetsViewController: WKNavigationDelegate {
       decisionHandler(.allow)
     }
   }
-
-  func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-    loadTweetInWebView(webView)
-  }
-
-  // Tweet Loader
-  func loadTweetInWebView(_ webView: WKWebView) {
-    guard let widgetsJsScript = widgetsJs.content,
-      let tweet = tweets.getByIdx(webView.tag)
-      else { return }
-
-    webView.evaluateJavaScript(widgetsJsScript)
-    webView.evaluateJavaScript("twttr.widgets.load();")
-
-    // Documentation:
-    // https://developer.twitter.com/en/docs/twitter-for-websites/embedded-tweets/guides/embedded-tweet-javascript-factory-function
-    webView.evaluateJavaScript("""
-      twttr.widgets.createTweet(
-      '\(tweet.id)',
-      document.getElementById('wrapper'),
-      { align: 'center' }
-      ).then(el => {
-      window.webkit.messageHandlers.heightCallback.postMessage(el.offsetHeight.toString())
-      });
-      """)
-  }
 }
 
 // MARK:- WKUIDelegate
@@ -188,13 +148,13 @@ extension TweetsViewController: WKScriptMessageHandler {
     guard let tag = message.webView?.tag,
       let body = message.body as? String,
       let height = Int(body),
-      let callback = Callback(rawValue: message.name),
-      callback == Callback.height
+      let callback = WebCallback(rawValue: message.name),
+      callback == WebCallback.height
       else {
         return
     }
 
-    updateHeight(idx: tag, height: CGFloat(height))
+    updateHeight(tag: tag, height: CGFloat(height))
   }
 }
 
