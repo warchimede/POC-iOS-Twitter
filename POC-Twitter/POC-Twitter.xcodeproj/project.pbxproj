@@ -8,6 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		5CAFAB63242A6699006946BD /* TweetsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CAFAB62242A6699006946BD /* TweetsViewController.swift */; };
+		5CCCF5FB2436293C00A30465 /* WidgetJsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CCCF5FA2436293C00A30465 /* WidgetJsManager.swift */; };
+		5CCCF5FD2436296E00A30465 /* Tweet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CCCF5FC2436296E00A30465 /* Tweet.swift */; };
+		5CCCF5FF243629A800A30465 /* TweetsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CCCF5FE243629A800A30465 /* TweetsManager.swift */; };
+		5CCCF60124362A2900A30465 /* TweetCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CCCF60024362A2900A30465 /* TweetCell.swift */; };
 		5CE9A2242424E53900D501BD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE9A2232424E53900D501BD /* AppDelegate.swift */; };
 		5CE9A2262424E53900D501BD /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE9A2252424E53900D501BD /* SceneDelegate.swift */; };
 		5CE9A22B2424E53900D501BD /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5CE9A2292424E53900D501BD /* Main.storyboard */; };
@@ -17,6 +21,10 @@
 
 /* Begin PBXFileReference section */
 		5CAFAB62242A6699006946BD /* TweetsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TweetsViewController.swift; sourceTree = "<group>"; };
+		5CCCF5FA2436293C00A30465 /* WidgetJsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetJsManager.swift; sourceTree = "<group>"; };
+		5CCCF5FC2436296E00A30465 /* Tweet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tweet.swift; sourceTree = "<group>"; };
+		5CCCF5FE243629A800A30465 /* TweetsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TweetsManager.swift; sourceTree = "<group>"; };
+		5CCCF60024362A2900A30465 /* TweetCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TweetCell.swift; sourceTree = "<group>"; };
 		5CE9A2202424E53900D501BD /* POC-Twitter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "POC-Twitter.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5CE9A2232424E53900D501BD /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5CE9A2252424E53900D501BD /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -58,7 +66,11 @@
 			children = (
 				5CE9A2232424E53900D501BD /* AppDelegate.swift */,
 				5CE9A2252424E53900D501BD /* SceneDelegate.swift */,
+				5CCCF5FC2436296E00A30465 /* Tweet.swift */,
+				5CCCF60024362A2900A30465 /* TweetCell.swift */,
+				5CCCF5FE243629A800A30465 /* TweetsManager.swift */,
 				5CAFAB62242A6699006946BD /* TweetsViewController.swift */,
+				5CCCF5FA2436293C00A30465 /* WidgetJsManager.swift */,
 				5CE9A2292424E53900D501BD /* Main.storyboard */,
 				5CE9A22C2424E53D00D501BD /* Assets.xcassets */,
 				5CE9A22E2424E53D00D501BD /* LaunchScreen.storyboard */,
@@ -138,9 +150,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5CCCF5FB2436293C00A30465 /* WidgetJsManager.swift in Sources */,
+				5CCCF60124362A2900A30465 /* TweetCell.swift in Sources */,
+				5CCCF5FD2436296E00A30465 /* Tweet.swift in Sources */,
 				5CAFAB63242A6699006946BD /* TweetsViewController.swift in Sources */,
 				5CE9A2242424E53900D501BD /* AppDelegate.swift in Sources */,
 				5CE9A2262424E53900D501BD /* SceneDelegate.swift in Sources */,
+				5CCCF5FF243629A800A30465 /* TweetsManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

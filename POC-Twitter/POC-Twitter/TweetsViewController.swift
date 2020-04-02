@@ -16,21 +16,6 @@ enum Callback: String {
   case height = "heightCallback"
 }
 
-class TweetCell: UITableViewCell {
-  static let identifier = "TweetCell"
-  static let defaultCellHeight: CGFloat = 1000
-  static let padding: CGFloat = 20
-  static let html = """
-  <html>
-  <head>
-  <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no'>
-  </head>
-  <body>
-  <div id='wrapper'></div>
-  </body>
-  </html>
-  """
-}
 
 class TweetsViewController: UITableViewController {
 
@@ -221,70 +206,5 @@ extension UITableView {
       reloadRows(at: [indexPath], with: .none)
     }
     setContentOffset(lastScrollOffset, animated: false)
-  }
-}
-
-// MARK:- TweetsManager
-class TweetsManager {
-  static let shared = TweetsManager()
-
-  var tweets: [Tweet] = []
-
-  func initializeWithTweetIds(_ tweetIds: [Int]) {
-    tweets = buildIndexedTweets(tweetIds)
-  }
-
-  func count() -> Int {
-    return tweets.count
-  }
-
-  func all() -> [Tweet] {
-    return tweets
-  }
-
-  func getByIdx(_ idx: Int) -> Tweet? {
-    return tweets.first { $0.idx == idx }
-  }
-
-  private func buildIndexedTweets(_ tweetIds: [Int]) -> [Tweet] {
-    return tweetIds.enumerated().map { (idx, id) in
-      return Tweet(id: id, idx: idx)
-    }
-  }
-}
-
-// MARK:- Tweet
-class Tweet {
-  // The tweet id
-  let id: Int
-
-  // An index value we'll use to map tweets to the WKWebViews tag property and the UITableView row
-  let idx: Int
-
-  // The height of the WKWebView
-  var height: CGFloat
-
-  // The WKWebView we'll use to display the tweet
-  var webView: WKWebView?
-
-  init(id: Int, idx: Int) {
-    self.id = id
-    self.idx = idx
-    self.height = TweetCell.defaultCellHeight
-  }
-}
-
-// MARK:- WidgetsJsManager
-class WidgetsJsManager {
-  static let shared = WidgetsJsManager()
-
-  private(set) var content: String?
-
-  func load() {
-    do {
-      content = try String(contentsOf: URL(string: "https://platform.twitter.com/widgets.js")!)
-    } catch {
-      print("Could not load widget.js script")
-    }
   }
 }
