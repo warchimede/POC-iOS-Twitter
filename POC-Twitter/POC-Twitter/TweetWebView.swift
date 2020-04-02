@@ -40,12 +40,13 @@ class TweetWebView: WKWebView {
 
   var height = TweetCell.defaultCellHeight
 
-  func load(tweetId: Int) {
-    guard let url = URL(string: "https://france.tv"),
-      let widgetsScript = TweetWebView.widgetsScript
-    else { return }
-
+  func loadHTML() {
+    guard let url = URL(string: "https://france.tv") else { return }
     loadHTMLString(TweetWebView.html, baseURL: url)
+  }
+
+  func loadScripts(tweetId: Int) {
+    guard let widgetsScript = TweetWebView.widgetsScript else { return }
 
     evaluateJavaScript(widgetsScript)
     evaluateJavaScript(TweetWebView.loadScript(tweetId: tweetId))

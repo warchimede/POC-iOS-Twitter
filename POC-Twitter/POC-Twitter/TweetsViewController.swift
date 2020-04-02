@@ -11,7 +11,6 @@ import UIKit
 import WebKit
 
 class TweetsViewController: UITableViewController {
-
   let tweetIds = [1240943034780520450, 1240596478663495681, 1242516361420640256, 1245651655594401792]
   private var tweetWebViews = Set<TweetWebView>()
 
@@ -35,7 +34,7 @@ class TweetsViewController: UITableViewController {
   func preloadWebviews() {
     tweetIds.forEach { tweetId in
       let tweetWebView = createTweetWebView(tweetId: tweetId)
-      tweetWebView.load(tweetId: tweetId)
+      tweetWebView.loadHTML()
       tweetWebViews.insert(tweetWebView)
     }
   }
@@ -125,6 +124,12 @@ extension TweetsViewController: WKNavigationDelegate {
     } else {
       decisionHandler(.allow)
     }
+  }
+
+  func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+    guard let tweetWebView = webView as? TweetWebView else { return }
+
+    tweetWebView.loadScripts(tweetId: tweetWebView.tag)
   }
 }
 
